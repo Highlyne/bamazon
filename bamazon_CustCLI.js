@@ -18,3 +18,19 @@ var connection = mysql.createConnection({
     console.log("connected as id " + connection.threadId);
     connection.end();
   });
+
+//   connection.connect(function(err) {
+//     if (err) throw err;
+//     console.log("connected as id " + connection.threadId);
+//     queryAllSongs();
+//     queryDanceSongs();
+//   });
+  
+//   function queryAllSongs() {
+//     connection.query("SELECT * FROM songs", function(err, res) {
+//       for (var i = 0; i < res.length; i++) {
+//         console.log(res[i].id + " | " + res[i].title + " | " + res[i].artist + " | " + res[i].genre);
+//       }
+//       console.log("-----------------------------------");
+//     });
+//   }

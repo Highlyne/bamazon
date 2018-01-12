@@ -7,12 +7,32 @@ CREATE DATABASE bamazon_db;
 USE bamazon_db;
 
 -- Creates the table "products" within bamazon_db --
-CREATE TABLE products (
+CREATE TABLE Baby (
   id INTEGER (11) AUTO_INCREMENT NOT NULL,
-  product_name VARCHAR (255),
-  department_name VARCHAR (255),
-  price INTEGER (30),
-  stock_qty INTEGER (11),
+  item VARCHAR (255),
+  price DECIMAL(10,4),
+  qty_available INTEGER (10),
+  department VARCHAR (255),
+  PRIMARY KEY (id)
+)
+;
+
+CREATE TABLE Toy (
+  id INTEGER (11) AUTO_INCREMENT NOT NULL,
+  item VARCHAR (255),
+  price DECIMAL(10,4),
+  qty_available INTEGER (10),
+  department VARCHAR (255),
+  PRIMARY KEY (id)
+)
+;
+
+CREATE TABLE Women (
+  id INTEGER (11) AUTO_INCREMENT NOT NULL,
+  item VARCHAR (255),
+  price DECIMAL(10,4),
+  qty_available INTEGER (10),
+  department VARCHAR (255),
   PRIMARY KEY (id)
 )
 ;
@@ -28,3 +48,9 @@ VALUES
 ("Rake", "Hardware", 10, 40);
 ("Broom", "Hardware", 9, 50);
 ("Yard Bags", "Hardware", 7, 100);
+
+INSERT INTO products (product_name, department_name, price, stock_qty)
+VALUES
+("Red Shoes", "Women", 50, 100);
+("Black Shoes", "Women", 40, 125);
+("White Shoes", "Women", 35, 100);
