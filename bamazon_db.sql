@@ -23,3 +23,8 @@ VALUES
 ("Onesie", "Baby", 8, 50);
 ("Blanket", "Baby", 12, 75);
 
+INSERT INTO products (product_name, department_name, price, stock_qty)
+VALUES
+("Rake", "Hardware", 10, 40);
+("Broom", "Hardware", 9, 50);
+("Yard Bags", "Hardware", 7, 100);
