@@ -7,7 +7,6 @@ var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
 
-    // Your username
     user: "root",
 
     // Your password
@@ -43,17 +42,22 @@ function shoppingCart() {
                     break;
 
                 case "Toy Department":
-                    // showToyTable();
-                    connection.end();
+                connection.query("SELECT * FROM Toy", function (err, res) {
+                    console.table(res);});
+                    showProductTable();
                     break;
 
                 case "Women Department":
-                    // showwomenTable();
-                    connection.end();
+                connection.query("SELECT * FROM Women", function (err, res) {
+                    console.table(res);});
+                    showProductTable();
                     break;
             }
         });
 };
+
+var product = "";
+var qty = "";
 
 function showProductTable() {
         inquirer.prompt({
@@ -62,7 +66,7 @@ function showProductTable() {
             message: "Which item ID would you like to purchase?"
         })    
         .then(function (answer) {
-                var product = answer.productID;
+            product = answer.productID
                 howMany();
             })
         };
@@ -74,28 +78,32 @@ function howMany() {
                 message: "How many?"
                 })
                 .then(function (answer) {
-                    var qty = answer.qty;
-                    makePurchaseBaby();
-
-    function makePurchaseBaby(x) {
-        connection.query("SELECT * FROM Baby WHERE id = ?", [x], function (err, res) {
-            console.table(res);
-
-            inquirer.prompt({
-                name: "babyPurchase",
-                type: "confirm",
-                message: "Do you confirm?"
-            }) .then(function (answer) {
-               if (answer.babyPurchase === true) {
-                    console.log("\n Your purchase is complete. Thank you!");
+                    // shoppingCart();
+                    qty = answer.qty;
+                    console.log("Here is product and how many " + product + qty);
                     connection.end();
-               } else if (answer.babyPurchase === false) {
-                   console.log("\n Please make another selection");
-                   showBabyTable();
-                   connection.end();
-                    }
                 })
+            };
+
+// function makePurchaseBaby() {
+//         connection.query("SELECT * FROM Baby WHERE id = ?", [x], function (err, res) {
+//             console.table(res);
+
+//             inquirer.prompt({
+//                 name: "babyPurchase",
+//                 type: "confirm",
+//                 message: "Do you confirm?"
+//             }) .then(function (answer) {
+//                if (answer.babyPurchase === true) {
+//                     console.log("\n Your purchase is complete. Thank you!");
+//                     connection.end();
+//                } else if (answer.babyPurchase === false) {
+//                    console.log("\n Please make another selection");
+//                    showBabyTable();
+//                    connection.end();
+//                     }
+//                 })
             
-        });
-    };
-};
+//         });
+//     };
+// };
