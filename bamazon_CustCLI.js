@@ -31,14 +31,15 @@ function shoppingCart() {
             choices: [
                 "Baby Department",
                 "Toy Department",
-                "Women Department",
-            ]
+                "Women Department"]
         })
         .then(function (answer) {
             switch (answer.action) {
                 case "Baby Department":
-                    showBabyTable();
 
+                    connection.query("SELECT * FROM Baby", function (err, res) {
+                        console.table(res);});
+                        showProductTable();
                     break;
 
                 case "Toy Department":
@@ -52,27 +53,49 @@ function shoppingCart() {
                     break;
             }
         });
+};
 
-    function showBabyTable() {
+function showProductTable() {
+        inquirer.prompt({
+            name: "productID",
+            type: "input",
+            message: "Which item ID would you like to purchase?"
+        })    
+        .then(function (answer) {
+                var product = answer.productID;
+                howMany();
+            })
+        };
 
-        connection.query("SELECT * FROM Baby", function (err, res) {
+function howMany() {
+            inquirer.prompt({
+                name: "qty",
+                type: "input",
+                message: "How many?"
+                })
+                .then(function (answer) {
+                    var qty = answer.qty;
+                    makePurchaseBaby();
 
+    function makePurchaseBaby(x) {
+        connection.query("SELECT * FROM Baby WHERE id = ?", [x], function (err, res) {
             console.table(res);
 
-            inquirer
-                .prompt({
-                    name: "productID",
-                    type: "input",
-                    message: "Which item ID would you like to purchase?"})
-
-                .then(function (answer) {
-                    console.log("You have selected to purchase: " + answer.productID);
-
-                    connection.query("SELECT * FROM Baby WHERE id = ?", { id: answer.productID }, function (err, res) {
-                        console.table(this.res);   
-                    })
+            inquirer.prompt({
+                name: "babyPurchase",
+                type: "confirm",
+                message: "Do you confirm?"
+            }) .then(function (answer) {
+               if (answer.babyPurchase === true) {
+                    console.log("\n Your purchase is complete. Thank you!");
                     connection.end();
+               } else if (answer.babyPurchase === false) {
+                   console.log("\n Please make another selection");
+                   showBabyTable();
+                   connection.end();
+                    }
                 })
-            })
+            
+        });
     };
-}
+};
