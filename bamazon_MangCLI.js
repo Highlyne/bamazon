@@ -27,31 +27,32 @@ function welcome() {
             type: "rawlist",
             message: "Welcome. Please make a selection from below?",
             choices: [
-                "Baby Department",
-                "Toy Department",
-                "Women Department"]
+                "View products for sale",
+                "View low inventory",
+                "Add to inventory",
+                "Add new product"]
         })
         .then(function (answer) {
             switch (answer.action) {
-                case "Baby Department":
-                    connection.query('SELECT * FROM Full_list WHERE department = ?', ["Baby"], function (err, res) {
+                case "View products for sale":
+                    connection.query('SELECT * FROM Full_list', function (err, res) {
                         console.log("\n");
                         console.table(res);
                         console.log("\n");
-                        buyWhat();
+                        cont();
                     });
                     break;
 
-                case "Toy Department":
-                    connection.query('SELECT * FROM Full_list WHERE department = ?', ["Toy"], function (err, res) {
+                case "View low inventory":
+                    connection.query('SELECT * FROM Full_list WHERE qty_available = qty_available < 10', function (err, res) {
                         console.log("\n");
                         console.table(res);
                         console.log("\n");
-                        buyWhat();
-                    });
+                        addInventory();
+                        });
                     break;
 
-                case "Women Department":
+                case "Add to inventory":
                     connection.query('SELECT * FROM Full_list WHERE department = ?', ["Women"], function (err, res) {
                         console.log("\n");
                         console.table(res);
@@ -59,6 +60,19 @@ function welcome() {
                         buyWhat();
                     });
                     break;
+
+                case "Add new product":
+                connection.query('SELECT * FROM Full_list WHERE department = ?', ["Women"], function (err, res) {
+                    console.log("\n");
+                    console.table(res);
+                    console.log("\n");
+                    buyWhat();
+                });
+                break;
+
+                case "Exit":
+                process.end();
+                break;
             }
         })
 };
@@ -68,11 +82,11 @@ var buyQTY;
 var stockINV;
 var itemCost;
 
-function buyWhat() {
+function addWhat() {
     inquirer.prompt({
         name: "productID",
         type: "input",
-        message: "Which item ID would you like to purchase?"
+        message: "Which item ID would you like to add stock?"
     })
         .then(function (answer) {
             product = answer.productID;
@@ -80,35 +94,23 @@ function buyWhat() {
         })
 };
 
-function howMany() {
+function addInventory() {
     inquirer.prompt({
-        name: "qty",
+        name: "low_inventory",
         type: "input",
-        message: "How many?"
+        message: "The items above are low in stock.  Would you like to add more?"
     })
-        .then(function (answer) {
-            buyQTY = answer.qty;
-
-            connection.query('SELECT * FROM Full_list WHERE id = ?', [product], function (err, res) {
-
-                if (err) throw err;
-
-
-                for (i = 0; i < res.length; i++) {
-                    stockINV = res[i].qty_available;
-                    itemCost = res[i].price_USD;
-                }
-
-                if (stockINV < buyQTY) {
-                    console.log("\nSorry. Bamazon is not able to complete that request.  Please select another quanity.");
-                    howMany();
+    .then(function (answer) {        
+        if (answer.low_inventory === true) {
+                    addWhat();
                 } else {
-                    console.log("\nYour total is: $" + itemCost * buyQTY);
-                    makePurchase();
-                }
+                    welcome();
+                    }
             })
-        })
+        
 };
+
+// Continue coding from here below. 
 
 function makePurchase() {
     inquirer.prompt({
@@ -137,18 +139,18 @@ function updateQTY(r,p) {
 })
 };
 
-function shopORquit() {
+function cont() {
     inquirer.prompt({
         name: "continue",
         type: "confirm",
-        message: "Would you like to continue shopping?"
+        message: "Would you like to make another selection?"
     }) 
     .then(function (answer) {
         if (answer.continue === true) {
             welcome();
             }
         else if (answer.confirmPurchase === false) {
-            console.log("\n Please come again. Goodbye.")
+            console.log("\n Thank you. Goodbye.")
         .then(function(){
                 process.exit();
             })
