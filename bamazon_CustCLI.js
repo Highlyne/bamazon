@@ -67,12 +67,13 @@ var product;
 var buyQTY;
 var stockINV;
 var itemCost;
+var reduceQTY= stockINV - buyQTY;
 
 function buyWhat() {
     inquirer.prompt({
         name: "productID",
         type: "input",
-        message: "Which item ID would you like to purchase?\n"
+        message: "Which item ID would you like to purchase?"
     })
         .then(function (answer) {
             product = answer.productID;
@@ -100,10 +101,10 @@ function howMany() {
                 }
 
                 if (stockINV < buyQTY) {
-                    console.log("Sorry. Bamazon is not able to complete that request.  Please select another quanity.");
+                    console.log("\nSorry. Bamazon is not able to complete that request.  Please select another quanity.");
                     howMany();
                 } else {
-                    console.log("Your total is: $" + itemCost * buyQTY);
+                    console.log("\nYour total is: $" + itemCost * buyQTY);
                     makePurchase();
                 }
             })
@@ -118,16 +119,42 @@ function makePurchase() {
     }) 
     .then(function (answer) {
         if (answer.confirmPurchase === true) {
-            console.log("\n Thank you!  Your purchase is complete.");
+            // updateQTY();
+            console.log("Here is the reduce qty: " + reduceQTY);
+            console.log("Here is the buyers qty: " + buyQTY);
+            console.log("Here is the stock available: " + stockINV);
             connection.end();}
         else if (answer.confirmPurchase === false) {
             console.log("\n Please make another selection");
-            // showBabyTable();
-            connection.end();
+            welcome();
             }
     })
 };
 
-// console.log("\n Thank you! Your order has been placed");
-// connection.end();
-// })};
+// function updateQTY() {
+    
+//     connection.query('UPDATE Full_list SET qty_available = ? WHERE id = ?', [reduceQTY, product], function (err, res) {
+//         console.log("\n Thank you!  Your purchase is complete.\n");
+//         console.log('changed ' + results.changedRows + ' rows');
+//         shopORquit();
+// })
+// };
+
+function shopORquit() {
+    inquirer.prompt({
+        name: "continue",
+        type: "confirm",
+        message: "Would you like to continue shopping?"
+    }) 
+    .then(function (answer) {
+        if (answer.continue === true) {
+            welcome();
+            }
+        else if (answer.confirmPurchase === false) {
+            console.log("\n Please come again. Goodbye.")
+        .then(function(){
+                process.exit();
+            })
+        }
+    })
+};
