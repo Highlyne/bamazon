@@ -36,21 +36,12 @@ CREATE TABLE Women (
   PRIMARY KEY (id)
 )
 ;
-
-INSERT INTO products (product_name, department_name, price, stock_qty)
-VALUES
-("Crib", "Baby", 122, 20);
-("Onesie", "Baby", 8, 50);
-("Blanket", "Baby", 12, 75);
-
-INSERT INTO products (product_name, department_name, price, stock_qty)
-VALUES
-("Rake", "Hardware", 10, 40);
-("Broom", "Hardware", 9, 50);
-("Yard Bags", "Hardware", 7, 100);
-
-INSERT INTO products (product_name, department_name, price, stock_qty)
-VALUES
-("Red Shoes", "Women", 50, 100);
-("Black Shoes", "Women", 40, 125);
-("White Shoes", "Women", 35, 100);
+CREATE TABLE Full_list (
+  id INTEGER (11) AUTO_INCREMENT NOT NULL,
+  item VARCHAR (255),
+  price_USD DECIMAL(10,4),
+  qty_available INTEGER (10),
+  department VARCHAR (255),
+  PRIMARY KEY (id)
+)
+;

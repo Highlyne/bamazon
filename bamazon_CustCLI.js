@@ -17,11 +17,10 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
-    shoppingCart();
-
+    welcome();
 });
 
-function shoppingCart() {
+function welcome() {
     inquirer
         .prompt({
             name: "action",
@@ -35,75 +34,100 @@ function shoppingCart() {
         .then(function (answer) {
             switch (answer.action) {
                 case "Baby Department":
-
-                    connection.query("SELECT * FROM Baby", function (err, res) {
-                        console.table(res);});
-                        showProductTable();
+                    connection.query('SELECT * FROM Full_list WHERE department = ?', ["Baby"], function (err, res) {
+                        console.log("\n");
+                        console.table(res);
+                        console.log("\n");
+                        buyWhat();
+                    });
                     break;
 
                 case "Toy Department":
-                connection.query("SELECT * FROM Toy", function (err, res) {
-                    console.table(res);});
-                    showProductTable();
+                    connection.query('SELECT * FROM Full_list WHERE department = ?', ["Toy"], function (err, res) {
+                        console.log("\n");
+                        console.table(res);
+                        console.log("\n");
+                        buyWhat();
+                    });
                     break;
 
                 case "Women Department":
-                connection.query("SELECT * FROM Women", function (err, res) {
-                    console.table(res);});
-                    showProductTable();
+                    connection.query('SELECT * FROM Full_list WHERE department = ?', ["Women"], function (err, res) {
+                        console.log("\n");
+                        console.table(res);
+                        console.log("\n");
+                        buyWhat();
+                    });
                     break;
             }
-        });
+        })
 };
 
-var product = "";
-var qty = "";
+var product;
+var buyQTY;
+var stockINV;
+var itemCost;
 
-function showProductTable() {
-        inquirer.prompt({
-            name: "productID",
-            type: "input",
-            message: "Which item ID would you like to purchase?"
-        })    
+function buyWhat() {
+    inquirer.prompt({
+        name: "productID",
+        type: "input",
+        message: "Which item ID would you like to purchase?\n"
+    })
         .then(function (answer) {
-            product = answer.productID
-                howMany();
-            })
-        };
+            product = answer.productID;
+            howMany();
+        })
+};
 
 function howMany() {
-            inquirer.prompt({
-                name: "qty",
-                type: "input",
-                message: "How many?"
-                })
-                .then(function (answer) {
-                    // shoppingCart();
-                    qty = answer.qty;
-                    console.log("Here is product and how many " + product + qty);
-                    connection.end();
-                })
-            };
+    inquirer.prompt({
+        name: "qty",
+        type: "input",
+        message: "How many?"
+    })
+        .then(function (answer) {
+            buyQTY = answer.qty;
 
-// function makePurchaseBaby() {
-//         connection.query("SELECT * FROM Baby WHERE id = ?", [x], function (err, res) {
-//             console.table(res);
+            connection.query('SELECT * FROM Full_list WHERE id = ?', [product], function (err, res) {
 
-//             inquirer.prompt({
-//                 name: "babyPurchase",
-//                 type: "confirm",
-//                 message: "Do you confirm?"
-//             }) .then(function (answer) {
-//                if (answer.babyPurchase === true) {
-//                     console.log("\n Your purchase is complete. Thank you!");
-//                     connection.end();
-//                } else if (answer.babyPurchase === false) {
-//                    console.log("\n Please make another selection");
-//                    showBabyTable();
-//                    connection.end();
-//                     }
-//                 })
-            
-//         });
-//     };
-// };
+                if (err) throw err;
+
+
+                for (i = 0; i < res.length; i++) {
+                    stockINV = res[i].qty_available;
+                    itemCost = res[i].price_USD;
+                }
+
+                if (stockINV < buyQTY) {
+                    console.log("Sorry. Bamazon is not able to complete that request.  Please select another quanity.");
+                    howMany();
+                } else {
+                    console.log("Your total is: $" + itemCost * buyQTY);
+                    makePurchase();
+                }
+            })
+        })
+};
+
+function makePurchase() {
+    inquirer.prompt({
+        name: "confirmPurchase",
+        type: "confirm",
+        message: "Would you like to make this purchase?"
+    }) 
+    .then(function (answer) {
+        if (answer.confirmPurchase === true) {
+            console.log("\n Thank you!  Your purchase is complete.");
+            connection.end();}
+        else if (answer.confirmPurchase === false) {
+            console.log("\n Please make another selection");
+            // showBabyTable();
+            connection.end();
+            }
+    })
+};
+
+// console.log("\n Thank you! Your order has been placed");
+// connection.end();
+// })};
