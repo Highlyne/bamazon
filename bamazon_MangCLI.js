@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId);
+    console.log("Welcome! Manager connection is sucessful\n");
     welcome();
 });
 
@@ -154,10 +154,12 @@ function updateQTY(a,p) {
 };
 
 function addNewItem() {
-    connection.query('INSERT INTO Full_list VALUES = ?', [itemName, itemPrice, addQTY, dep], function (err, res) {
-        console.table(res);
+    connection.query('INSERT INTO Full_list SET ?', {item: itemName, price_USD: itemPrice, qty_available: addQTY, department: dep}, function (err, res) {
+        if (error) throw error;
+        console.log(results.insertId);
+    })
+        console.log(itemName + " has been added to " + dep + " department.")
         cont();
-    })  
 };
 
 function cont() {
