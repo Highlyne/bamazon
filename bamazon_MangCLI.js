@@ -94,6 +94,11 @@ var newItem = [{
 
 
 function addToWhat() {
+    connection.query('SELECT * FROM Full_list', function (err, res) {
+        console.log("\n");
+        console.table(res);
+        console.log("\n");
+    })
     inquirer.prompt({
         name: "productID",
         type: "input",
