@@ -25,12 +25,13 @@ function welcome() {
         .prompt({
             name: "action",
             type: "rawlist",
-            message: "Welcome. Please make a selection from below?",
+            message: "Please make a selection from below?",
             choices: [
                 "View products for sale",
-                "View low inventory",
+                "View items with low inventory",
                 "Add to inventory",
-                "Add new product"]
+                "Add new product",
+                "Exit"]
         })
         .then(function (answer) {
             switch (answer.action) {
@@ -43,100 +44,115 @@ function welcome() {
                     });
                     break;
 
-                case "View low inventory":
-                    connection.query('SELECT * FROM Full_list WHERE qty_available = qty_available < 10', function (err, res) {
+                case "View items with low inventory":
+                    connection.query('SELECT * FROM Full_list WHERE qty_available = qty_available < 80', function (err, res) {
                         console.log("\n");
                         console.table(res);
                         console.log("\n");
-                        addInventory();
+                        addToWhat();
                         });
                     break;
 
                 case "Add to inventory":
-                    connection.query('SELECT * FROM Full_list WHERE department = ?', ["Women"], function (err, res) {
-                        console.log("\n");
-                        console.table(res);
-                        console.log("\n");
-                        buyWhat();
-                    });
+                   addToWhat();
                     break;
 
                 case "Add new product":
-                connection.query('SELECT * FROM Full_list WHERE department = ?', ["Women"], function (err, res) {
-                    console.log("\n");
-                    console.table(res);
-                    console.log("\n");
-                    buyWhat();
-                });
+                addQuestions();
                 break;
 
                 case "Exit":
-                process.end();
+                connection.end();
                 break;
             }
         })
 };
 
-var product;
-var buyQTY;
-var stockINV;
-var itemCost;
+var itemID;
+var addQTY;
+var itemName;
+var itemPrice;
+var price;
+var dep;
+var newItem = [{
+    name: "productNM",
+    type: "input",
+    message: "Enter item name"
+}, {
+    name: "productPR",
+    type: "input",
+    message: "Enter item price"
+}, {
+    name: "productQTY",
+    type: "input",
+    message: "How many are available"
+}, {
+    name: "productDEP",
+    type: "input",
+    message: "Add to what department?"
+}];
 
-function addWhat() {
+
+function addToWhat() {
     inquirer.prompt({
         name: "productID",
         type: "input",
-        message: "Which item ID would you like to add stock?"
-    })
+        message: "Which item ID would you like to add more stock?"
+            })
         .then(function (answer) {
-            product = answer.productID;
+            itemID = answer.productID;
             howMany();
         })
 };
 
-function addInventory() {
+function howMany() {
     inquirer.prompt({
-        name: "low_inventory",
+        name: "howMany",
         type: "input",
-        message: "The items above are low in stock.  Would you like to add more?"
+        message: "How many do you wish to add?"
     })
-    .then(function (answer) {        
-        if (answer.low_inventory === true) {
-                    addWhat();
-                } else {
-                    welcome();
-                    }
-            })
-        
-};
-
-// Continue coding from here below. 
-
-function makePurchase() {
-    inquirer.prompt({
-        name: "confirmPurchase",
-        type: "confirm",
-        message: "Would you like to make this purchase?"
-    }) 
-    .then(function (answer) {
-        if (answer.confirmPurchase === true) {
+        .then(function (answer) {
+            addQTY = answer.howMany;
             updateQTY();
-            console.log("Here is the buyers qty: " + buyQTY);
-            console.log("Here is the stock available: " + stockINV);
-            connection.end();}
-        else if (answer.confirmPurchase === false) {
-            console.log("\n Please make another selection");
-            welcome();
-            }
-    })
+        })
 };
 
-function updateQTY(r,p) {
+function itemPrice() {
+    inquirer.prompt({
+        name: "itemPrice",
+        type: "input",
+        message: "What is the item price?"
+    })
+        .then(function (answer) {
+            price = answer.itemPrice;
+        })
+};
+
+function addQuestions() {
+    inquirer.prompt(newItem)
+    .then(function (answer) {
+        addQTY = answer.productQTY;
+        itemName = answer.productNM;
+        itemPrice = answer.productPR;
+        dep = answer.productDEP;
+        addNewItem();
+        })
+    };
+
+
+function updateQTY(a,p) {
     
-    connection.query('UPDATE Full_list SET qty_available = qty_available - ? WHERE id = ?', [buyQTY, product], function (err, res) {
-        console.log("\n Thank you!  Your purchase is complete.\n");
-        shopORquit();
+    connection.query('UPDATE Full_list SET qty_available = qty_available + ? WHERE id = ?', [addQTY, itemID], function (err, res) {
+        console.table(res);
+        cont();
 })
+};
+
+function addNewItem() {
+    connection.query('INSERT INTO Full_list VALUES = ?', [itemName, itemPrice, addQTY, dep], function (err, res) {
+        console.table(res);
+        cont();
+    })  
 };
 
 function cont() {
@@ -149,11 +165,11 @@ function cont() {
         if (answer.continue === true) {
             welcome();
             }
-        else if (answer.confirmPurchase === false) {
-            console.log("\n Thank you. Goodbye.")
-        .then(function(){
-                process.exit();
-            })
-        }
+        else if (answer.continue === false) {
+            console.log("\n Thank you. Goodbye.");
+        
+                connection.end();
+            }
+        
     })
 };
