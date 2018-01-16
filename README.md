@@ -61,7 +61,7 @@ Manager CLI gives a list a set of menu options:
 
 <img src="https://github.com/Highlyne/bamazon/blob/master/screen_shots/add_new.gif" width="600" height="500">
 
-<img src="https://github.com/Highlyne/bamazon/blob/master/screen_shots/add_new.gif" width="600" height="500">
+<img src="https://github.com/Highlyne/bamazon/blob/master/screen_shots/item_added.gif" width="600" height="500">
 - - -
 
 
