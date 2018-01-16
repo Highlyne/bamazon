@@ -19,7 +19,7 @@ Bamazon operates on a sigle database using a table to record Products.  The tabl
 
    * stock_quantity (how much of the product is available in stores)
 
-###Customer View
+### Customer View
 
 Customers are able to view a list of all of the items available for sale. The list shows ids, names, and prices of products for sale by department.  Below are a view examples:
 
@@ -29,11 +29,15 @@ Customer are prompted with three messages.
    * The total purchase amount is shown and the customer is given the option to complete the transaction or cancel.
    * After the transaction is complete the avaiable stock is updated.
 
+<img src="https://github.com/Highlyne/bamazon/blob/master/screen_shots/cust_purchase.gif" width="600" height="500">
+
+<img src="https://github.com/Highlyne/bamazon/blob/master/screen_shots/show_Decrease.gif" width="600" height="500">
 
 **Insufficient Stock**
 
 If Bamazon has insufficient stock to complete the customer's request the customer will be given a message and the opportunity to select another quanity.
 
+<img src="https://github.com/Highlyne/bamazon/blob/master/screen_shots/not_enough.gif" width="600" height="500">
 
 - - -
 
@@ -49,11 +53,15 @@ Manager CLI gives a list a set of menu options:
     
     * Add to Inventory
       -displays a prompt that will let the manager "add more" of any item currently in the store.
-  
     
     * Add New Product
       -allows the manager to add a completely new product to the store.
 
+<img src="https://github.com/Highlyne/bamazon/blob/master/screen_shots/view_all.gif" width="600" height="500">
+
+<img src="https://github.com/Highlyne/bamazon/blob/master/screen_shots/add_new.gif" width="600" height="500">
+
+<img src="https://github.com/Highlyne/bamazon/blob/master/screen_shots/add_new.gif" width="600" height="500">
 - - -
 
 
