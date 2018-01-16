@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId);
+    console.log("Guest connection is successsful.");
     welcome();
 });
 
@@ -93,7 +93,6 @@ function howMany() {
 
                 if (err) throw err;
 
-
                 for (i = 0; i < res.length; i++) {
                     stockINV = res[i].qty_available;
                     itemCost = res[i].price_USD;
@@ -119,9 +118,7 @@ function makePurchase() {
     .then(function (answer) {
         if (answer.confirmPurchase === true) {
             updateQTY();
-            console.log("Here is the buyers qty: " + buyQTY);
-            console.log("Here is the stock available: " + stockINV);
-            connection.end();}
+        }
         else if (answer.confirmPurchase === false) {
             console.log("\n Please make another selection");
             welcome();
@@ -147,11 +144,10 @@ function shopORquit() {
         if (answer.continue === true) {
             welcome();
             }
-        else if (answer.confirmPurchase === false) {
-            console.log("\n Please come again. Goodbye.")
-        .then(function(){
-                process.exit();
-            })
-        }
+        else if (answer.confirm === false) {
+            console.log("\n Please come again. Goodbye.");
+            connection.end();
+            }
+        
     })
 };

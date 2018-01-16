@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("Welcome! Manager connection is sucessful\n");
+    console.log("Welcome Manager connection is sucessful\n");
     welcome();
 });
 
@@ -45,7 +45,7 @@ function welcome() {
                     break;
 
                 case "View items with low inventory":
-                    connection.query('SELECT * FROM Full_list WHERE qty_available = qty_available < 80', function (err, res) {
+                    connection.query('SELECT * FROM Full_list WHERE qty_available<= 15', function (err, res) {
                         console.log("\n");
                         console.table(res);
                         console.log("\n");
@@ -158,7 +158,7 @@ function addNewItem() {
         if (error) throw error;
         console.log(results.insertId);
     })
-        console.log(itemName + " has been added to " + dep + " department.")
+        console.log(itemName + " has been added to the " + dep + " department.")
         cont();
 };
 
